@@ -1,12 +1,12 @@
 const express = require("express");
 const cors = require("cors");
-const products = require("./products");
+const bodyParser = require("body-parser");
+const productRoutes = require("./routes/products");
 
 const app = express();
+app.use(bodyParser.json());
 app.use(cors());
-app.get("/products", (req, res) => {
-  res.json(products);
-});
+app.use("/products", productRoutes);
 
 app.listen(8000, () => {
   console.log("hellooooo");
