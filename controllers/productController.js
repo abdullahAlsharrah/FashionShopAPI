@@ -1,36 +1,48 @@
-let products = require("../products");
-const slugify = require("slugify");
+const { Product, Vendor } = require("../db/models");
 
-exports.productList = (req, res) => res.json(products);
-
-exports.productDelete = (req, res) => {
-  const { productId } = req.params;
-  foundProduct = products.find((product) => product.id === +productId);
-  if (foundProduct) {
-    products = products.filter((product) => product !== foundProduct);
-    console.log(products);
-    res.status(204).end();
-  } else {
-    res.status(404).json({ message: "Product not found" });
+exports.fetchProduct = async (productId, next) => {
+  try {
+    const product = await Product.findByPk(productId);
+    return product;
+  } catch (error) {
+    next(error);
+  }
+};
+exports.productList = async (req, res, next) => {
+  try {
+    const products = await Product.findAll({
+      attributes: { exclude: ["bakeryId", "createdAt", "updatedAt"] },
+      include: {
+        model: Vendor,
+        as: "vendor",
+        attributes: ["name"],
+      },
+    });
+    res.json(products);
+  } catch (error) {
+    next(error);
   }
 };
 
-exports.productCreate = (req, res) => {
-  const id = products[products.length - 1].id + 1;
-  const slug = slugify(req.body.name, { lower: true });
-  const newProduct = { id, slug, ...req.body };
-  products.push(newProduct);
-  res.status(201).json(newProduct);
+exports.productDelete = async (req, res, next) => {
+  try {
+    await req.product.destroy();
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
 };
 
-exports.productUpdate = (req, res) => {
-  const { productId } = req.params;
-  const foundProduct = products.find((product) => product.id === +productId);
-  if (foundProduct) {
-    for (const key in req.body) foundProduct[key] = req.body[key];
-    foundProduct.slug = slugify(req.body.name, { lower: true });
+exports.productUpdate = async (req, res, next) => {
+  try {
+    if (req.file) {
+      req.body.image = `${req.protocol}://${req.get("host")}/media/${
+        req.file.filename
+      }`;
+    }
+    await req.product.update(req.body);
     res.status(204).end();
-  } else {
-    res.status(404).json({ message: "Product not found" });
+  } catch (error) {
+    next(error);
   }
 };
