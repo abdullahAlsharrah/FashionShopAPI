@@ -1,62 +1,62 @@
-const { Vendor, Product } = require("../db/models");
+const { Store, Product } = require("../db/models");
 
-exports.fetchVendor = async (vendorId, next) => {
+exports.fetchStore = async (storeId, next) => {
   try {
-    const vendor = await Vendor.findByPk(vendorId);
-    return vendor;
+    const store = await Store.findByPk(storeId);
+    return store;
   } catch (error) {
     next(error);
   }
 };
-exports.vendorList = async (req, res, next) => {
+exports.storeList = async (req, res, next) => {
   try {
-    const vendors = await Vendor.findAll({
+    const stores = await Store.findAll({
       attributes: ["id", "name"],
       include: [
         {
-          model: Vendor,
-          as: "vendorId",
+          model: Product,
+          as: "products",
           attributes: { exclude: ["createdAt", "updatedAt"] },
         },
       ],
     });
-    res.json(vendors);
+    res.json(stores);
   } catch (error) {
     next(error);
   }
 };
 
-// exports.vendorDelete = async (req, res, next) => {
+// exports.storeDelete = async (req, res, next) => {
 //   try {
-//     await req.vendor.destroy();
+//     await req.store.destroy();
 //     res.status(204).end();
 //   } catch (error) {
 //     next(error);
 //   }
 // };
 
-exports.vendorCreate = async (req, res, next) => {
+exports.storeCreate = async (req, res, next) => {
   try {
     if (req.file) {
       req.body.image = `${req.protocol}://${req.get("host")}/media/${
         req.file.filename
       }`;
     }
-    const newVendor = await Vendor.create(req.body);
-    res.status(201).json(newVendor);
+    const newStore = await Store.create(req.body);
+    res.status(201).json(newStore);
   } catch (error) {
     next(error);
   }
 };
 
-// exports.vendorUpdate = async (req, res, next) => {
+// exports.storeUpdate = async (req, res, next) => {
 //   try {
 //     if (req.file) {
 //       req.body.image = `${req.protocol}://${req.get("host")}/media/${
 //         req.file.filename
 //       }`;
 //     }
-//     await req.vendor.update(req.body);
+//     await req.store.update(req.body);
 //     res.status(204).end();
 //   } catch (error) {
 //     next(error);
@@ -70,7 +70,7 @@ exports.productCreate = async (req, res, next) => {
         req.file.filename
       }`;
     }
-    req.body.vendorId = req.vendor.id;
+    req.body.storeId = req.store.id;
     const newProduct = await Product.create(req.body);
     res.status(201).json(newProduct);
   } catch (error) {

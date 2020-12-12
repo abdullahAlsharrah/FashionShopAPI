@@ -1,4 +1,4 @@
-const { Product, Vendor } = require("../db/models");
+const { Product, Store } = require("../db/models");
 
 exports.fetchProduct = async (productId, next) => {
   try {
@@ -13,8 +13,8 @@ exports.productList = async (req, res, next) => {
     const products = await Product.findAll({
       attributes: { exclude: ["bakeryId", "createdAt", "updatedAt"] },
       include: {
-        model: Vendor,
-        as: "vendor",
+        model: Store,
+        as: "store",
         attributes: ["name"],
       },
     });
