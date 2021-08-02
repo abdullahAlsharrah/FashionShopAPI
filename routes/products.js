@@ -7,7 +7,7 @@ const {
   productUpdate,
   fetchProduct,
 } = require("../controllers/productController");
-// param Middleware
+// multer Middleware
 const upload = require("../middleware/multer");
 
 router.param("productId", async (req, res, next, productId) => {

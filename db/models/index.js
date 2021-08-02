@@ -44,14 +44,30 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 // Relation
-//One Store Has Many Products
-db.Store.hasMany(db.Product, {
+//One Vendor Has Many Products
+db.Vendor.hasMany(db.Product, {
   as: "products",
-  foreignKey: { fieldName: "storeId", allowNull: false },
+  foreignKey: { fieldName: "vendorId", allowNull: false },
 });
-// One Product Belong to a Store
-db.Product.belongsTo(db.Store, { as: "store" });
+// One Product Belong to a Vendor
+db.Product.belongsTo(db.Vendor, { as: "vendor" });
 
-// One User Has One Store
+// One User Has One Vendor
+
+//One User Has Many Orders
+db.User.hasMany(db.Order, { as: "orders", foreignKey: "userId" });
+// Order Belongs to a user
+db.Order.belongsTo(db.User, { as: "user" });
+
+//One Order Belomgs to many Products
+db.Order.belongsToMany(db.Product, {
+  through: db.OrderItem,
+  foreignKey: "orderId",
+});
+//One Product Belongs To Many Orders
+db.Product.belongsToMany(db.Order, {
+  through: db.OrderItem,
+  foreignKey: "productId",
+});
 
 module.exports = db;
