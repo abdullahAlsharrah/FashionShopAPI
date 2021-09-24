@@ -8,28 +8,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    slug: {
-      type: DataTypes.STRING,
-      unique: true,
-    },
     description: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     price: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER && DataTypes.FLOAT,
       defaultValue: 5,
-      validate: {
-        min: 1,
-      },
     },
     image: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-  });
-  SequelizeSlugify.slugifyModel(Product, {
-    source: ["name"],
   });
 
   return Product;

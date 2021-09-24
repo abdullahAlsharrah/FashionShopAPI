@@ -31,5 +31,6 @@ router.delete("/:productId", productDelete);
 // update a Product
 
 router.put("/:productId", upload.single("image"), productUpdate);
-
+// create an new Product
+router.post("/", upload.single("image"), productCreate);
 module.exports = router;

@@ -4,5 +4,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       defaultValue: 1,
     },
+    souce: {
+      type: DataTypes.STRING,
+    },
+    note: {
+      type: DataTypes.STRING,
+    },
   });
 };

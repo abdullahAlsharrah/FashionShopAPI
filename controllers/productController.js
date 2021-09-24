@@ -10,14 +10,7 @@ exports.fetchProduct = async (productId, next) => {
 };
 exports.productList = async (req, res, next) => {
   try {
-    const products = await Product.findAll({
-      attributes: { exclude: ["bakeryId", "createdAt", "updatedAt"] },
-      include: {
-        model: Vendor,
-        as: "vendor",
-        attributes: ["name"],
-      },
-    });
+    const products = await Product.findAll();
     res.json(products);
   } catch (error) {
     next(error);
@@ -42,6 +35,19 @@ exports.productUpdate = async (req, res, next) => {
     }
     await req.product.update(req.body);
     res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+};
+exports.productCreate = async (req, res, next) => {
+  try {
+    if (req.file) {
+      req.body.image = `${req.protocol}://${req.get("host")}/media/${
+        req.file.filename
+      }`;
+    }
+    const newProduct = await Product.create(req.body);
+    res.status(201).json(newProduct);
   } catch (error) {
     next(error);
   }
